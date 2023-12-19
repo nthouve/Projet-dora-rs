@@ -1,0 +1,101 @@
+#Speech to text feature code
+
+#Run this in the consol first :
+#pip install sounddevice numpy scipy pydub keyboard
+#Don't forget to install whisper
+print("Initializing System")
+
+import whisper
+
+import sounddevice as sd
+import numpy as np
+import scipy.io.wavfile as wav
+from pydub import AudioSegment
+
+import keyboard
+
+import time
+
+print("System Initialized")
+print("Press SPACE to start recording")
+print("Press ESC to exit")
+
+# Set the parameters for recording
+fs = 44100  # sample rate
+max_duration = 30    
+audio_data = []
+
+recording = False
+stop = False
+
+def start_recording():
+
+    print("Recording... Press SPACE to stop.")
+     
+    global audio_data
+    audio_data = sd.rec(int(fs*max_duration), samplerate=fs, channels=2, dtype=np.int16, blocking=False)
+
+def stop_recording():
+    sd.stop()
+
+    print("Recording stopped.")
+
+def run():
+    model = whisper.load_model("base")
+    time1 = time.time()
+    wav_file_path = "recorded_audio.wav"
+
+    print("Saving audio file")
+
+    wav.write(wav_file_path, fs, audio_data)
+    time2 = time.time()
+
+    audio = AudioSegment.from_wav(wav_file_path)
+
+    #audio = np.frombuffer(audio.raw_data, dtype=np.int16).astype(np.float32) / 32768.0
+    audio = whisper.load_audio(wav_file_path)
+    audio = whisper.pad_or_trim(audio)
+
+    time3 = time.time()
+
+    print("Trimmed")  
+
+    mel = whisper.log_mel_spectrogram(audio).to(model.device)  
+
+    print("mel computed")
+
+
+    # decode the audio
+    options = whisper.DecodingOptions(fp16=False)
+    result = whisper.decode(model, mel, options)
+    time4 = time.time()
+    # print the recognized text
+    print(result.text)
+    print("Saving : " , time2-time1)
+    print("Converting : " , time3-time2)
+    print("Whisper : " , time4-time3)
+    print("Total : ", time4-time1)
+  
+def action():
+    global recording
+
+    if recording:
+        recording = False
+        stop_recording()
+        run()
+        print("Press SPACE to start recording")
+        print("Press ESC to exit")
+    else :
+        recording = True
+        start_recording()
+
+def terminate():
+    global stop
+    stop = True
+
+keyboard.add_hotkey('space', action)
+keyboard.add_hotkey('esc', terminate)
+
+while not stop:
+    time.sleep(1)
+print("System Terminated")
