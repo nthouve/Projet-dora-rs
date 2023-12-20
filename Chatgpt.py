@@ -9,16 +9,20 @@ with open('openFile.py', 'r') as fichier:
     # Lire tout le contenu du fichier dans une variable
     contenu = fichier.read()
 
-commande = "Affiche les 20 premiers nombres au lieu des 10 premiers"
+commande = "Change the O signs by F signs in the tic tac toe game please"
 
 client = OpenAI()
-#Prompt = "J'ai un fichier python que je veux modifier légèrement pour respecter la commande que je t'ai envoyé, envoie moi le code python en entier que tu auras modifié afin de respecter la commande. Ce que tu me renvoies doit pouvoir être copier collé directement dans un fichier python et ainsi prêt à l'utilisation. Voici le fichier python dont je parle :\n" + contenu + "\nRenvoies le moi avec ces modifications"+"Voici la commande dont je parle : " + commande
-Prompt = "Voici un fichier python :\n" + contenu + "\nModifie le pour respecter la condition suivante :\n" + commande + "\nRenvoie le fichier en entier"
-print(Prompt)
-response = client.completions.create(
-  model="gpt-3.5-turbo-instruct",
-  prompt=Prompt
+
+Prompt = "this is a python code :\n" + contenu + "\n" + commande + "Format your response by:\n1. first showing the block to replace to replace\n2. Showing the modified code"
+
+
+response = client.chat.completions.create(
+  model="gpt-4",
+  messages=[
+    {"role": "system", "content": "You are a helpful assistant."},
+    {"role": "user", "content": Prompt}
+  ]
 )
 
-print(response.choices[0].text)
+print(response.choices[0].message.content)
 
