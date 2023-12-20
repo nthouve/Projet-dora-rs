@@ -12,7 +12,7 @@ def ask_gpt(commande, file):
 
   client = OpenAI()
 
-  Prompt = "this is a python code :\n" + contenu + "\n" + commande + "Format your response by:\n1. first showing the block to replace to replace\n2. Showing the modified code"
+  Prompt = "this is a python code :\n" + contenu + "\n" + commande + "Format your response by:\n1. first showing the block to replace to replace\n2. Showing the whole modified code"
 
 
   response = client.chat.completions.create(
@@ -25,4 +25,4 @@ def ask_gpt(commande, file):
 
   print(response.choices[0].message.content)
 
-ask_gpt("Change the O signs by F signs in the tic tac toe game please",'openFile.py')
+ask_gpt("Change the name of the second function please and modify the symbols",'openFile.py')
