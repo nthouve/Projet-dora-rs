@@ -1,4 +1,13 @@
 from openai import OpenAI
+import dora
+import pyarrow as pa
+import inspect
+import numpy as np
+import pandas as pd
+import pylcs
+import textwrap
+import sys
+import time
 
 import os
 
@@ -49,3 +58,47 @@ def extract_command(gptCommand):
   return blocks
 
 #print(ask_gpt("Change les symboles du jeu du morpion",'openFile.py'))
+
+ef search_most_simlar_line(text, searched_line):
+    lines = text.split("\n")
+    values = []
+
+    for line in lines:
+        values.append(pylcs.lcs_sequence_length(line, searched_line))
+    output = lines[np.array(values).argmax()]
+    return output
+
+
+def strip_indentation(code_block):
+    # Use textwrap.dedent to strip common leading whitespace
+    dedented_code = textwrap.dedent(code_block)
+
+    return dedented_code
+
+
+def replace_code_with_indentation(original_code, replacement_code):
+    # Split the original code into lines
+    lines = original_code.splitlines()
+
+    # Preserve the indentation of the first line
+    indentation = lines[0][: len(lines[0]) - len(lines[0].lstrip())]
+
+    # Create a new list of lines with the replacement code and preserved indentation
+    new_code_lines = indentation + replacement_code
+
+    return new_code_lines
+
+
+def replace_source_code(source_code, gen_replacement):
+    initial = search_most_simlar_line(source_code, gen_replacement)
+    replacement = strip_indentation(gen_replacement.replace("```python\n", "").replace("\n```", "").replace("\n", ""))
+    intermediate_result = replace_code_with_indentation(initial, replacement)
+    end_result = source_code.replace(initial, intermediate_result)
+    return end_result
+
+
+def replace_2(text, ligne_a_modifier, ligne_modifiee):
+  replacement = strip_indentation(ligne_modifiee.replace("```python\n", "").replace("\n```", "").replace("\n", ""))
+  int_result=replace_code_with_indentation(ligne_a_modifier, replacement)
+  end_result = text.replace(ligne_a_modifier, int_result)
+  return end_result
