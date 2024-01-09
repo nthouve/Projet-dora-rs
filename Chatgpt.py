@@ -2,7 +2,6 @@ from openai import OpenAI
 import textwrap
 import os
 
-# Replace "your_actual_api_key" with your OpenAI API key
 os.environ["OPENAI_API_KEY"] = "my key"
 
 def ask_gpt(commande, file):
@@ -81,4 +80,3 @@ def replace_2(nom_fichier, commande_chatGPT):
   return end_result
 
 print(replace_2("test.py", ask_gpt("À la fin, affiche les 100 premiers entiers en utilisant une boucle",'test.py')))
-
