@@ -97,7 +97,10 @@ def replace_source_code(source_code, gen_replacement):
     return end_result
 
 
-def replace_2(text, ligne_a_modifier, ligne_modifiee):
+def replace_2(text, commande_chatGPT):
+  commande = extract_command(commande_chatGPT)
+  ligne_a_modifier = commande[0]
+  ligne_modifiee = commande[1]
   replacement = strip_indentation(ligne_modifiee.replace("```python\n", "").replace("\n```", "").replace("\n", ""))
   int_result=replace_code_with_indentation(ligne_a_modifier, replacement)
   end_result = text.replace(ligne_a_modifier, int_result)
