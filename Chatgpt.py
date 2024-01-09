@@ -57,18 +57,6 @@ def extract_command(gptCommand):
 
   return blocks
 
-#print(ask_gpt("Change les symboles du jeu du morpion",'openFile.py'))
-
-ef search_most_simlar_line(text, searched_line):
-    lines = text.split("\n")
-    values = []
-
-    for line in lines:
-        values.append(pylcs.lcs_sequence_length(line, searched_line))
-    output = lines[np.array(values).argmax()]
-    return output
-
-
 def strip_indentation(code_block):
     # Use textwrap.dedent to strip common leading whitespace
     dedented_code = textwrap.dedent(code_block)
@@ -88,20 +76,17 @@ def replace_code_with_indentation(original_code, replacement_code):
 
     return new_code_lines
 
+def replace_2(nom_fichier, commande_chatGPT):
+      
+  with open(nom_fichier, 'r') as fichier:
+    content = fichier.read()
 
-def replace_source_code(source_code, gen_replacement):
-    initial = search_most_simlar_line(source_code, gen_replacement)
-    replacement = strip_indentation(gen_replacement.replace("```python\n", "").replace("\n```", "").replace("\n", ""))
-    intermediate_result = replace_code_with_indentation(initial, replacement)
-    end_result = source_code.replace(initial, intermediate_result)
-    return end_result
-
-
-def replace_2(text, commande_chatGPT):
   commande = extract_command(commande_chatGPT)
   ligne_a_modifier = commande[0]
   ligne_modifiee = commande[1]
   replacement = strip_indentation(ligne_modifiee.replace("```python\n", "").replace("\n```", "").replace("\n", ""))
   int_result=replace_code_with_indentation(ligne_a_modifier, replacement)
-  end_result = text.replace(ligne_a_modifier, int_result)
+  end_result = content.replace(ligne_a_modifier, int_result)
   return end_result
+
+print(replace_2("openFile.py", ask_gpt("Change les symboles du jeu du morpion",'openFile.py')))
