@@ -1,9 +1,5 @@
 from openai import OpenAI
-import pyarrow as pa
-import inspect
-import numpy as np
 import textwrap
-
 import os
 
 # Replace "your_actual_api_key" with your OpenAI API key
