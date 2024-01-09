@@ -1,18 +1,13 @@
 from openai import OpenAI
-import dora
 import pyarrow as pa
 import inspect
 import numpy as np
-import pandas as pd
-import pylcs
 import textwrap
-import sys
-import time
 
 import os
 
 # Replace "your_actual_api_key" with your OpenAI API key
-os.environ["OPENAI_API_KEY"] = "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"
+os.environ["OPENAI_API_KEY"] = "my key"
 
 def ask_gpt(commande, file):
   # Ouvrir le fichier en mode lecture ('r' pour read)
@@ -84,9 +79,10 @@ def replace_2(nom_fichier, commande_chatGPT):
   commande = extract_command(commande_chatGPT)
   ligne_a_modifier = commande[0]
   ligne_modifiee = commande[1]
-  replacement = strip_indentation(ligne_modifiee.replace("```python\n", "").replace("\n```", "").replace("\n", ""))
-  int_result=replace_code_with_indentation(ligne_a_modifier, replacement)
-  end_result = content.replace(ligne_a_modifier, int_result)
+  ##replacement = strip_indentation(ligne_modifiee.replace("```python\n", "").replace("\n```", "").replace("\n", ""))
+  ##int_result=replace_code_with_indentation(ligne_a_modifier, replacement)
+  end_result = content.replace(ligne_a_modifier, ligne_modifiee)
   return end_result
 
-print(replace_2("openFile.py", ask_gpt("Change les symboles du jeu du morpion",'openFile.py')))
+print(replace_2("test.py", ask_gpt("À la fin, affiche les 100 premiers entiers en utilisant une boucle",'test.py')))
+
