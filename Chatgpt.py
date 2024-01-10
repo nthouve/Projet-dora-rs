@@ -79,4 +79,10 @@ def replace_2(nom_fichier, commande_chatGPT):
   end_result = content.replace(ligne_a_modifier, ligne_modifiee)
   return end_result
 
+def save_as(content, path):
+  #use at the end of replace_2 as save_as(end_result, "file_path")
+  with open(path, 'w') as file:
+    file.write(content)
+  print("file saved !")
+
 print(replace_2("test.py", ask_gpt("À la fin, affiche les 100 premiers entiers en utilisant une boucle",'test.py')))
